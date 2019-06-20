@@ -74,18 +74,18 @@ public class Player : MonoBehaviour
             {
                 transform.position = new Vector3(
                     newPosition.x,
-                    occupyingBlock.capPosition,
+                    occupyingBlock.topPoint,
                     newPosition.z);
             }
             else
             {
-                //
+                //donothing
             }
         }
     }
 
     private bool IsMovementLegal(Block occupyingBlock)
     {
-        return Math.Abs(transform.position.y - occupyingBlock.capPosition) <= 1;
+        return Math.Abs(transform.position.y - occupyingBlock.topPoint) <= 1;
     }
 }

@@ -3,30 +3,56 @@
 [ExecuteInEditMode]
 public class Block : MonoBehaviour
 {
-    public float capPosition;
+    public float topPoint;
+    public float bottomPoint;
+    public float height;
 
     float xPosition;
-    float yPosition;
     float zPosition;
+    float offset;
 
-    float height = 1;
+    Collider collider;
 
+    private void Start()
+    {
+        collider = GetComponent<Collider>();
+    }
     private void Update()
     {
-        UpdatePosition();
+        UpdateFields();
         RenameBlock();
+        SnapToGrid();
     }
 
-    private void UpdatePosition()
+    private void UpdateFields()
     {
         xPosition = transform.position.x - 0.5f;
-        yPosition = transform.position.y;
-        capPosition = yPosition + height;
         zPosition = transform.position.z - 0.5f;
+        bottomPoint = collider.bounds.min.y + 0.5f;
+        topPoint = collider.bounds.max.y + 0.5f;
+        height = transform.localScale.y;
     }
 
     private void RenameBlock()
     {
         gameObject.name = "Block " + $"({xPosition}, {zPosition})";
+    }
+
+    private void SnapToGrid()
+    {
+        if (height % 2 == 0)
+        {
+            offset = 0.5f;
+        }
+        else
+        {
+            offset = 0;
+        }
+
+        this.gameObject.transform.position = new Vector3(
+            Mathf.RoundToInt(transform.position.x - 0.1f) + 0.5f,
+            Mathf.RoundToInt(transform.position.y - 0.1f) + offset,
+            Mathf.RoundToInt(transform.position.z - 0.1f) + 0.5f
+            );
     }
 }

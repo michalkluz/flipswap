@@ -138,6 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ff28eb71c5e7140a597e776406a92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shouldSnapToGrid: 1
 --- !u!114 &1102210707
 MonoBehaviour:
   m_ObjectHideFlags: 0
