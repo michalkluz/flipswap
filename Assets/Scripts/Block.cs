@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [ExecuteInEditMode]
 public class Block : MonoBehaviour
@@ -11,12 +12,24 @@ public class Block : MonoBehaviour
     float zPosition;
     float offset;
 
-    Collider collider;
+    new Collider collider;
+
+    public bool LowerBlock()
+    {
+        var result = false;
+        if (topPoint > 0)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
+            result = true;
+        }
+        return result;
+    }
 
     private void Start()
     {
         collider = GetComponent<Collider>();
     }
+
     private void Update()
     {
         UpdateFields();

@@ -18,6 +18,7 @@ public class Blocks : MonoBehaviour
         }
         return result;
     }
+
     void Update()
     {
         if (transform.childCount != blocks.Count)

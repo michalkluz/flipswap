@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     private bool goDown;
     private bool goLeft;
     private bool goRight;
+    private bool pushDown;
     private Blocks allBlocks;
     public Block currentBlock;
 
@@ -21,6 +22,15 @@ public class Player : MonoBehaviour
         {
             Move();
         }
+
+        if (pushDown && currentBlock != null)
+        {
+            var blockLowered = currentBlock.LowerBlock();
+            if (blockLowered)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
+            }
+        }
     }
 
     private void GatherInput()
@@ -29,6 +39,7 @@ public class Player : MonoBehaviour
         goDown = Input.GetKeyDown(KeyCode.DownArrow);
         goLeft = Input.GetKeyDown(KeyCode.LeftArrow);
         goRight = Input.GetKeyDown(KeyCode.RightArrow);
+        pushDown = Input.GetKeyDown(KeyCode.Z);
     }
 
     private void Move()
