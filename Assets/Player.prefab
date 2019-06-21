@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ff28eb71c5e7140a597e776406a92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldSnapToGrid: 1
+  shouldSnapToGrid: 0
 --- !u!114 &1102210707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d733ccb00864948847ec7a393f9d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentBlock: {fileID: 0}
 --- !u!1 &8625051663598882985
 GameObject:
   m_ObjectHideFlags: 0

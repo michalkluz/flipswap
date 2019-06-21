@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     private bool goLeft;
     private bool goRight;
     private Blocks allBlocks;
+    public Block currentBlock;
 
     private void Awake()
     {
@@ -67,6 +68,7 @@ public class Player : MonoBehaviour
         if (occupyingBlock == null)
         {
             transform.position = newPosition;
+            currentBlock = null;
         }
         else
         {
@@ -76,6 +78,7 @@ public class Player : MonoBehaviour
                     newPosition.x,
                     occupyingBlock.topPoint,
                     newPosition.z);
+                currentBlock = occupyingBlock;
             }
             else
             {
