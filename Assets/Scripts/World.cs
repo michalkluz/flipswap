@@ -6,6 +6,8 @@ public class World : MonoBehaviour
     public bool isFlipped = false;
 
     private bool spacePressed;
+    private bool resetPressed;
+
 
     int currentLevel = 0;
 
@@ -15,6 +17,11 @@ public class World : MonoBehaviour
         if (spacePressed)
         {
             FlipWorld();
+        }
+        resetPressed = Input.GetKeyDown(KeyCode.R);
+        if (resetPressed)
+        {
+            ReloadLevel();
         }
     }
 

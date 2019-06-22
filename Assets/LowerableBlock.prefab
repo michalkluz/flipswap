@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6484827163727177620}
   - component: {fileID: 5674474313474753319}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: LowerableBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,3 +107,4 @@ MonoBehaviour:
   topPoint: 1
   bottomPoint: 0
   height: 1
+  isLowerable: 1

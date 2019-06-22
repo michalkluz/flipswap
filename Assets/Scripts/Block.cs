@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteInEditMode]
 public class Block : MonoBehaviour
@@ -7,6 +6,7 @@ public class Block : MonoBehaviour
     public float topPoint;
     public float bottomPoint;
     public float height;
+    public bool isLowerable = false;
 
     float xPosition;
     float zPosition;
@@ -17,7 +17,7 @@ public class Block : MonoBehaviour
     public bool LowerBlock()
     {
         var result = false;
-        if (topPoint > 0)
+        if (topPoint > 0 && isLowerable)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
             result = true;
