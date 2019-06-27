@@ -3,82 +3,92 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private bool goUp;
-    private bool goDown;
-    private bool goLeft;
-    private bool goRight;
+    public Block currentBlock;
+
+    private bool goForward;
+    private bool goBackward;
+    private bool turnLeft;
+    private bool turnRight;
+    private bool pushUp;
     private bool pushDown;
     private Blocks allBlocks;
-    public Block currentBlock;
+    private bool isWorldFlipped = false;
 
     private void Awake()
     {
         allBlocks = FindObjectOfType<Blocks>();
     }
+
     void Update()
     {
         GatherInput();
-        if (goUp || goDown || goLeft || goRight)
+        if (goForward || goBackward)
         {
             Move();
         }
 
+        if (turnLeft && !isWorldFlipped || (turnRight && isWorldFlipped))
+        {
+            transform.Rotate(0, -90, 0);
+        }
+
+        if (turnRight && !isWorldFlipped || (turnLeft && isWorldFlipped))
+        {
+            transform.Rotate(0, 90, 0);
+        }
+
         if (pushDown && currentBlock != null)
         {
-            var blockLowered = currentBlock.LowerBlock();
-            if (blockLowered)
+            var blockYMoved = currentBlock.LowerBlock();
+            if (blockYMoved)
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
             }
         }
+
+        if (pushUp && currentBlock != null)
+        {
+            var blockYMoved = currentBlock.RaiseBlock();
+            if (blockYMoved)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+            }
+        }
     }
 
+    public bool IsWorldFlipped
+    {
+        get { return isWorldFlipped; }
+        set { isWorldFlipped = !isWorldFlipped; }
+    }
+    
     private void GatherInput()
     {
-        goUp = Input.GetKeyDown(KeyCode.UpArrow);
-        goDown = Input.GetKeyDown(KeyCode.DownArrow);
-        goLeft = Input.GetKeyDown(KeyCode.LeftArrow);
-        goRight = Input.GetKeyDown(KeyCode.RightArrow);
+        goForward = Input.GetKeyDown(KeyCode.UpArrow);
+        goBackward = Input.GetKeyDown(KeyCode.DownArrow);
+        turnLeft = Input.GetKeyDown(KeyCode.LeftArrow);
+        turnRight = Input.GetKeyDown(KeyCode.RightArrow);
+        pushUp = Input.GetKeyDown(KeyCode.A);
         pushDown = Input.GetKeyDown(KeyCode.Z);
     }
 
     private void Move()
     {
         var newPosition = new Vector3();
-        if (goUp)
+        if (goForward)
         {
-            newPosition = new Vector3(
-                transform.position.x,
-                0,
-                transform.position.z + 1f);
+            newPosition = transform.position + transform.forward;
         }
 
-        else if (goDown)
+        else if (goBackward)
         {
-            newPosition = new Vector3(
-                transform.position.x,
-                0,
-                transform.position.z - 1f);
-        }
-        else if (goLeft)
-        {
-            newPosition = new Vector3(
-                transform.position.x - 1f,
-                0,
-                transform.position.z);
-        }
-        else if (goRight)
-        {
-            newPosition = new Vector3(
-                transform.position.x + 1f,
-                0,
-                transform.position.z);
+            newPosition = transform.position - transform.forward;
         }
 
         var occupyingBlock = allBlocks.GetOccupyingBlock(newPosition);
         if (occupyingBlock == null)
         {
-            transform.position = newPosition;
+            transform.position = new Vector3(newPosition.x, 0.5f, newPosition.z);
             currentBlock = null;
         }
         else

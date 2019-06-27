@@ -4,7 +4,7 @@
 public class GridSnapper : MonoBehaviour
 {
     [SerializeField] bool shouldSnapToGrid = true;
-    [SerializeField] float yOffset = 0;
+    public float yOffset = 0.5f;
 
     void Update()
     {
@@ -17,9 +17,9 @@ public class GridSnapper : MonoBehaviour
     private void SnapToGrid()
     {
         this.gameObject.transform.position = new Vector3(
-            Mathf.RoundToInt(transform.position.x - 0.1f) + 0.5f,
+            Mathf.RoundToInt(transform.position.x - 0.1f),
             Mathf.RoundToInt(transform.position.y - 0.1f) + yOffset,
-            Mathf.RoundToInt(transform.position.z - 0.1f) + 0.5f
+            Mathf.RoundToInt(transform.position.z - 0.1f)
             );
     }
 }

@@ -6,20 +6,37 @@ public class Block : MonoBehaviour
     public float topPoint;
     public float bottomPoint;
     public float height;
-    public bool isLowerable = false;
+    public bool isYMovable = false;
 
     float xPosition;
     float zPosition;
     float offset;
 
+    GridSnapper gridsnapper;
     new Collider collider;
+
+    private void Awake()
+    {
+        gridsnapper = GetComponent<GridSnapper>();
+    }
 
     public bool LowerBlock()
     {
         var result = false;
-        if (topPoint > 0 && isLowerable)
+        if (topPoint > 0.5f && isYMovable)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
+            result = true;
+        }
+        return result;
+    }
+
+    public bool RaiseBlock()
+    {
+        var result = false;
+        if (bottomPoint < 0f && isYMovable)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
             result = true;
         }
         return result;
@@ -33,39 +50,25 @@ public class Block : MonoBehaviour
     private void Update()
     {
         UpdateFields();
-        RenameBlock();
-        SnapToGrid();
     }
 
     private void UpdateFields()
     {
-        xPosition = transform.position.x - 0.5f;
-        zPosition = transform.position.z - 0.5f;
+        xPosition = transform.position.x;
+        zPosition = transform.position.z;
+        gameObject.name = "Block " + $"({xPosition}, {zPosition})";
+
         bottomPoint = collider.bounds.min.y + 0.5f;
         topPoint = collider.bounds.max.y + 0.5f;
+
         height = transform.localScale.y;
-    }
-
-    private void RenameBlock()
-    {
-        gameObject.name = "Block " + $"({xPosition}, {zPosition})";
-    }
-
-    private void SnapToGrid()
-    {
         if (height % 2 == 0)
         {
-            offset = 0.5f;
+            gridsnapper.yOffset = 0;
         }
         else
         {
-            offset = 0;
+            gridsnapper.yOffset = 0.5f;
         }
-
-        this.gameObject.transform.position = new Vector3(
-            Mathf.RoundToInt(transform.position.x - 0.1f) + 0.5f,
-            Mathf.RoundToInt(transform.position.y - 0.1f) + offset,
-            Mathf.RoundToInt(transform.position.z - 0.1f) + 0.5f
-            );
     }
 }

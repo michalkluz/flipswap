@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 6484827163727177623}
   - component: {fileID: 6484827163727177620}
   - component: {fileID: 5674474313474753319}
+  - component: {fileID: 3316347538940993606}
   m_Layer: 0
-  m_Name: LowerableBlock
+  m_Name: YBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6484827163727177618}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: 0, z: 0.5}
+  m_LocalPosition: {x: -1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -104,7 +105,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86df9194d5048864f8dfcbc2ed8a38cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topPoint: 1
-  bottomPoint: 0
+  topPoint: 1.5
+  bottomPoint: 0.5
   height: 1
-  isLowerable: 1
+  isYMovable: 1
+--- !u!114 &3316347538940993606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6484827163727177618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ff28eb71c5e7140a597e776406a92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shouldSnapToGrid: 1
+  yOffset: 0.5

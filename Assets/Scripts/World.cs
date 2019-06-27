@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class World : MonoBehaviour
 {
     public bool isFlipped = false;
+    public UnityEvent worldFlipped;  
 
     private bool spacePressed;
     private bool resetPressed;
@@ -54,6 +56,7 @@ public class World : MonoBehaviour
     {
         transform.Rotate(new Vector3(0, 0, 1), -180, Space.Self);
         isFlipped = !isFlipped;
+        worldFlipped.Invoke();
     }
 
     
