@@ -12,12 +12,14 @@ public class Block : MonoBehaviour
     float zPosition;
     float offset;
 
+    private Blocks allBlocks;
     GridSnapper gridsnapper;
     new Collider collider;
 
     private void Awake()
     {
         gridsnapper = GetComponent<GridSnapper>();
+        allBlocks = FindObjectOfType<Blocks>();
     }
 
     public bool LowerBlock()
@@ -40,6 +42,21 @@ public class Block : MonoBehaviour
             result = true;
         }
         return result;
+    }
+
+    public bool PushBlock(Vector3 pusherPosition)
+    {
+        var pushDirection = pusherPosition - transform.position;
+        var potentialPosition = transform.position - pushDirection;
+
+        var occupyingBlock = allBlocks.GetOccupyingBlock(potentialPosition);
+
+        if (occupyingBlock != null)
+        {
+            occupyingBlock.PushBlock(transform.position);
+        }
+        transform.position = potentialPosition;
+        return true;
     }
 
     private void Start()

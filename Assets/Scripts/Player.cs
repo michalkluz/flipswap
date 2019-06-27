@@ -22,58 +22,13 @@ public class Player : MonoBehaviour
     void Update()
     {
         GatherInput();
-        if (goForward || goBackward)
-        {
-            Move();
-        }
-
-        if (turnLeft && !isWorldFlipped || (turnRight && isWorldFlipped))
-        {
-            transform.Rotate(0, -90, 0);
-        }
-
-        if (turnRight && !isWorldFlipped || (turnLeft && isWorldFlipped))
-        {
-            transform.Rotate(0, 90, 0);
-        }
-
-        if (pushDown && currentBlock != null)
-        {
-            var blockYMoved = currentBlock.LowerBlock();
-            if (blockYMoved)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
-            }
-        }
-
-        if (pushUp && currentBlock != null)
-        {
-            var blockYMoved = currentBlock.RaiseBlock();
-            if (blockYMoved)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
-            }
-        }
+        Move();
+        Rotate();
+        LowerOrRaiseBlock();
     }
-
-    public bool IsWorldFlipped
-    {
-        get { return isWorldFlipped; }
-        set { isWorldFlipped = !isWorldFlipped; }
-    }
-    
-    private void GatherInput()
-    {
-        goForward = Input.GetKeyDown(KeyCode.UpArrow);
-        goBackward = Input.GetKeyDown(KeyCode.DownArrow);
-        turnLeft = Input.GetKeyDown(KeyCode.LeftArrow);
-        turnRight = Input.GetKeyDown(KeyCode.RightArrow);
-        pushUp = Input.GetKeyDown(KeyCode.A);
-        pushDown = Input.GetKeyDown(KeyCode.Z);
-    }
-
     private void Move()
     {
+        if (!(goForward || goBackward)) return;
         var newPosition = new Vector3();
         if (goForward)
         {
@@ -103,13 +58,75 @@ public class Player : MonoBehaviour
             }
             else
             {
-                //donothing
+                //trytopushblock
+                var blockPushed = occupyingBlock.PushBlock(transform.position);
+                if (blockPushed)
+                {
+                    transform.position = newPosition;
+                }
+                else
+                {
+                    //donothing
+                }
+
             }
         }
     }
 
     private bool IsMovementLegal(Block occupyingBlock)
     {
-        return Math.Abs(transform.position.y - occupyingBlock.topPoint) <= 1;
+        return Math.Abs(transform.position.y - occupyingBlock.topPoint) <= 0; // 0 for same-y-position travel
     }
+
+    private void Rotate()
+    {
+        if (turnLeft && !isWorldFlipped || (turnRight && isWorldFlipped))
+        {
+            transform.Rotate(0, -90, 0);
+        }
+
+        if (turnRight && !isWorldFlipped || (turnLeft && isWorldFlipped))
+        {
+            transform.Rotate(0, 90, 0);
+        }
+    }
+
+    private void LowerOrRaiseBlock()
+    {
+        if (pushDown && currentBlock != null)
+        {
+            var blockYMoved = currentBlock.LowerBlock();
+            if (blockYMoved)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y - 1, transform.position.z);
+            }
+        }
+
+        if (pushUp && currentBlock != null)
+        {
+            var blockYMoved = currentBlock.RaiseBlock();
+            if (blockYMoved)
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+            }
+        }
+    }
+
+    public bool IsWorldFlipped
+    {
+        get { return isWorldFlipped; }
+        set { isWorldFlipped = !isWorldFlipped; }
+    }
+
+    private void GatherInput()
+    {
+        goForward = Input.GetKeyDown(KeyCode.UpArrow);
+        goBackward = Input.GetKeyDown(KeyCode.DownArrow);
+        turnLeft = Input.GetKeyDown(KeyCode.LeftArrow);
+        turnRight = Input.GetKeyDown(KeyCode.RightArrow);
+        pushUp = Input.GetKeyDown(KeyCode.A);
+        pushDown = Input.GetKeyDown(KeyCode.Z);
+    }
+
+
 }
