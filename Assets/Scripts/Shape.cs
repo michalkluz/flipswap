@@ -4,7 +4,6 @@ using UnityEngine;
 public class Shape : MonoBehaviour
 {
     public List<Block> blocks;
-    public bool shouldSnap;
 
     World world;
 

@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     {
         if (!(goForward || goBackward || goLeft || goRight)) return;
         var newPosition = new Vector3Int();
+
         if (goForward)
         {
             newPosition = new Vector3Int(
@@ -77,13 +78,10 @@ public class Player : MonoBehaviour
 
         if (isBlockFound)
         {
-            if (IsMovementLegal(occupyingBlock))
+            if ((int)transform.position.y == occupyingBlock.topPoint)
             {
-                transform.position = new Vector3Int(
-                    newPosition.x,
-                    occupyingBlock.topPoint,
-                    newPosition.z);
-                currentBlock = occupyingBlock;
+                transform.position = newPosition;
+                //currentBlock = occupyingBlock;
             }
             else
             {
@@ -96,21 +94,16 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    //donothing
+                    //donothing because can't push
                 }
             }
         }
         else
         {
-            transform.position = new Vector3Int(newPosition.x, 0, newPosition.z);
-            currentBlock = null;
+            transform.position = newPosition;
+            //currentBlock = null;
 
         }
-    }
-
-    private bool IsMovementLegal(Block occupyingBlock)
-    {
-        return Math.Abs(transform.position.y - occupyingBlock.topPoint) <= 0; // 0 for same-y-position travel
     }
 
     private void LowerOrRaiseBlock()

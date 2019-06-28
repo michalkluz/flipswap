@@ -24,7 +24,6 @@ public class Block : MonoBehaviour
         collider = GetComponentInChildren<BoxCollider>();
     }
 
-    
     public bool IsSnappingToGrid
     {
         get { return gridSnapper.shouldSnapToGrid; }
@@ -33,14 +32,13 @@ public class Block : MonoBehaviour
 
     public bool CheckIfPushable(Vector3Int pushDirection)
     {
-        var potentialPosition = new Vector3Int((int)transform.position.x - pushDirection.x, (int)transform.position.y - pushDirection.y, (int)transform.position.z - pushDirection.z);
+        var potentialPosition = new Vector3Int((int)transform.position.x + pushDirection.x, (int)transform.position.y + pushDirection.y, (int)transform.position.z + pushDirection.z);
 
         Block occupyingBlock;
         var isBlockFound = world.FindBlockInPosition(potentialPosition, out occupyingBlock);
-
         if (isBlockFound)
         {
-            if (occupyingBlock.parentShape == parentShape)
+            if (occupyingBlock.parentShape.name == parentShape.name)
             {
                 return true;
             }
@@ -66,7 +64,7 @@ public class Block : MonoBehaviour
         }
         return result;
     }
-    
+
     public bool RaiseBlock()
     {
         var result = false;
