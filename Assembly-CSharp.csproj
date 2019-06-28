@@ -63,11 +63,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Block.cs" />
-    <Compile Include="Assets\Scripts\Blocks.cs" />
     <Compile Include="Assets\Scripts\EditorHelper.cs" />
     <Compile Include="Assets\Scripts\Goal.cs" />
     <Compile Include="Assets\Scripts\GridSnapper.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
+    <Compile Include="Assets\Scripts\Shape.cs" />
     <Compile Include="Assets\Scripts\World.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Projects/FlipSwap/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

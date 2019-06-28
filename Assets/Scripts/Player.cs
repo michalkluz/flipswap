@@ -11,12 +11,12 @@ public class Player : MonoBehaviour
     private bool turnRight;
     private bool pushUp;
     private bool pushDown;
-    private Blocks allBlocks;
     private bool isWorldFlipped = false;
+    World world;
 
     private void Awake()
     {
-        allBlocks = FindObjectOfType<Blocks>();
+        world = FindObjectOfType<World>();
     }
 
     void Update()
@@ -26,6 +26,17 @@ public class Player : MonoBehaviour
         Rotate();
         LowerOrRaiseBlock();
     }
+
+    private void GatherInput()
+    {
+        goForward = Input.GetKeyDown(KeyCode.UpArrow);
+        goBackward = Input.GetKeyDown(KeyCode.DownArrow);
+        turnLeft = Input.GetKeyDown(KeyCode.LeftArrow);
+        turnRight = Input.GetKeyDown(KeyCode.RightArrow);
+        pushUp = Input.GetKeyDown(KeyCode.A);
+        pushDown = Input.GetKeyDown(KeyCode.Z);
+    }
+
     private void Move()
     {
         if (!(goForward || goBackward)) return;
@@ -40,13 +51,11 @@ public class Player : MonoBehaviour
             newPosition = transform.position - transform.forward;
         }
 
-        var occupyingBlock = allBlocks.GetOccupyingBlock(newPosition);
-        if (occupyingBlock == null)
-        {
-            transform.position = new Vector3(newPosition.x, 0.5f, newPosition.z);
-            currentBlock = null;
-        }
-        else
+        Block occupyingBlock;
+        var isBlockFound = world.FindBlockInPosition(newPosition, out occupyingBlock);
+
+
+        if (isBlockFound)
         {
             if (IsMovementLegal(occupyingBlock))
             {
@@ -58,9 +67,10 @@ public class Player : MonoBehaviour
             }
             else
             {
-                //trytopushblock
-                var blockPushed = occupyingBlock.PushBlock(transform.position);
-                if (blockPushed)
+                var occupyingShape = occupyingBlock.parentShape;
+                var pushDirection = occupyingBlock.transform.position - transform.position;
+                var shapePushed = occupyingShape.PushShape(pushDirection);
+                if (shapePushed)
                 {
                     transform.position = newPosition;
                 }
@@ -68,8 +78,13 @@ public class Player : MonoBehaviour
                 {
                     //donothing
                 }
-
             }
+        }
+        else
+        {
+            transform.position = new Vector3(newPosition.x, 0.5f, newPosition.z);
+            currentBlock = null;
+           
         }
     }
 
@@ -118,15 +133,7 @@ public class Player : MonoBehaviour
         set { isWorldFlipped = !isWorldFlipped; }
     }
 
-    private void GatherInput()
-    {
-        goForward = Input.GetKeyDown(KeyCode.UpArrow);
-        goBackward = Input.GetKeyDown(KeyCode.DownArrow);
-        turnLeft = Input.GetKeyDown(KeyCode.LeftArrow);
-        turnRight = Input.GetKeyDown(KeyCode.RightArrow);
-        pushUp = Input.GetKeyDown(KeyCode.A);
-        pushDown = Input.GetKeyDown(KeyCode.Z);
-    }
+
 
 
 }

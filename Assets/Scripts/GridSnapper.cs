@@ -3,7 +3,7 @@
 [ExecuteInEditMode]
 public class GridSnapper : MonoBehaviour
 {
-    [SerializeField] bool shouldSnapToGrid = true;
+    public bool shouldSnapToGrid = true;
     public float yOffset = 0.5f;
 
     void Update()

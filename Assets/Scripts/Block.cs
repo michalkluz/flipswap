@@ -7,19 +7,54 @@ public class Block : MonoBehaviour
     public float bottomPoint;
     public float height;
     public bool isYMovable = false;
+    public GridSnapper gridSnapper;
+    public Shape parentShape;
 
     float xPosition;
     float zPosition;
     float offset;
-
-    private Blocks allBlocks;
-    GridSnapper gridsnapper;
+    World world;
     new Collider collider;
 
     private void Awake()
     {
-        gridsnapper = GetComponent<GridSnapper>();
-        allBlocks = FindObjectOfType<Blocks>();
+        world = FindObjectOfType<World>();
+        gridSnapper = GetComponent<GridSnapper>();
+        parentShape = GetComponentInParent<Shape>();
+    }
+
+    public bool IsSnappingToGrid
+    {
+        get { return gridSnapper.shouldSnapToGrid; }
+        set { gridSnapper.shouldSnapToGrid = !gridSnapper.shouldSnapToGrid; }
+    }
+
+    public bool CheckIfPushable(Vector3 pushDirection)
+    {
+        var potentialPosition = new Vector3(transform.position.x - pushDirection.x, transform.position.y - pushDirection.y, transform.position.z - pushDirection.z);
+
+        Block occupyingBlock;
+        var isBlockFound = world.FindBlockInPosition(potentialPosition, out occupyingBlock);
+
+        if (isBlockFound)
+        {
+            if (occupyingBlock.parentShape == parentShape)
+            {
+                Debug.Log("Same Shape!");
+                return true;
+            }
+            else
+            {
+                Debug.Log("Other Shape!");
+                return false;
+            }
+        }
+        else
+        {
+            Debug.Log("No occupying block");
+            return true;
+
+        }
     }
 
     public bool LowerBlock()
@@ -33,6 +68,7 @@ public class Block : MonoBehaviour
         return result;
     }
 
+
     public bool RaiseBlock()
     {
         var result = false;
@@ -43,21 +79,23 @@ public class Block : MonoBehaviour
         }
         return result;
     }
+        
 
-    public bool PushBlock(Vector3 pusherPosition)
-    {
-        var pushDirection = pusherPosition - transform.position;
-        var potentialPosition = transform.position - pushDirection;
+    //public bool PushBlock(Vector3 pusherPosition)
+    //{
+    //    var pushDirection = new Vector3(pusherPosition.x - transform.position.x, transform.position.y, pusherPosition.z - transform.position.z);
+    //    var potentialPosition = new Vector3(transform.position.x - pushDirection.x, transform.position.y, transform.position.z - pushDirection.z);
 
-        var occupyingBlock = allBlocks.GetOccupyingBlock(potentialPosition);
+    //    Block occupyingBlock;
+    //    var isBlockFound = world.FindBlockInPosition(potentialPosition, out occupyingBlock);
 
-        if (occupyingBlock != null)
-        {
-            occupyingBlock.PushBlock(transform.position);
-        }
-        transform.position = potentialPosition;
-        return true;
-    }
+    //    if (occupyingBlock != null)
+    //    {
+    //        occupyingBlock.PushBlock(transform.position);
+    //    }
+    //    transform.position = potentialPosition;
+    //    return true;
+    //}
 
     private void Start()
     {
@@ -81,11 +119,11 @@ public class Block : MonoBehaviour
         height = transform.localScale.y;
         if (height % 2 == 0)
         {
-            gridsnapper.yOffset = 0;
+            gridSnapper.yOffset = 0;
         }
         else
         {
-            gridsnapper.yOffset = 0.5f;
+            gridSnapper.yOffset = 0.5f;
         }
     }
 }
