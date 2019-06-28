@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-[ExecuteInEditMode]
 public class Shape : MonoBehaviour
 {
     public List<Block> blocks;
     public bool shouldSnap;
-
-    public UnityEvent switchSnapToGrid;
 
     World world;
 
@@ -16,20 +12,8 @@ public class Shape : MonoBehaviour
     {
         world = FindObjectOfType<World>();
     }
-    public bool ShouldSnap
-    {
-        get
-        {
-            return shouldSnap;
-        }
-        set
-        {
-            shouldSnap = value;
-            switchSnapToGrid.Invoke();
-        }
-    }
 
-    public bool PushShape(Vector3 pushDirection)
+    public bool PushShape(Vector3Int pushDirection)
     {
         var isShapePushable = true;
         var isBlockPushable = new List<bool>();
@@ -57,51 +41,26 @@ public class Shape : MonoBehaviour
         }
     }
 
-    private void MoveShapeInDirection(Vector3 pushDirection)
+    private void MoveShapeInDirection(Vector3Int pushDirection)
     {
-        var keysToRemove = new List<Vector3>();
-        var valuesToAdd = new List<KeyValuePair<Vector3, Block>>();
+        var keysToRemove = new List<Vector3Int>();
+        var entriesToAdd = new List<KeyValuePair<Vector3Int, Block>>();
         foreach (var block in blocks)
         {
-            keysToRemove.Add(block.transform.position);
-            valuesToAdd.Add(new KeyValuePair<Vector3, Block>(block.transform.position + pushDirection, block));
+            keysToRemove.Add(Vector3Int.RoundToInt(block.transform.position));
+            entriesToAdd.Add(new KeyValuePair<Vector3Int, Block>(Vector3Int.RoundToInt(block.transform.position) + pushDirection, block));
         }
-        world.UpdateWorldGrid(keysToRemove, valuesToAdd);
+        world.UpdateWorldGrid(keysToRemove, entriesToAdd); //removing all keys, then adding them again at the same time so they don't overlap
         transform.position += pushDirection;
     }
 
-    public Block GetOccupyingBlock(Vector3 position)
-    {
-        Block result = null;
-        foreach (Block block in blocks)
-        {
-            if (block.transform.position.x == position.x && block.transform.position.y == position.y && block.transform.position.z == position.z)
-            {
-                result = block;
-            }
-        }
-        return result;
-    }
-
-    //public void SwitchSnappingToGrid()
-    //{
-    //    foreach (Block block in blocks)
-    //    {
-    //        block.gridsnapper.shouldSnapToGrid = shouldSnap;
-    //    }
-    //}
-
     void Update()
     {
-
-        //SwitchSnappingToGrid();
-
         if (transform.childCount != blocks.Count)
         {
             ResetBlocks();
         }
     }
-
 
     void ResetBlocks()
     {
@@ -111,6 +70,5 @@ public class Shape : MonoBehaviour
         {
             blocks.Add(block);
         }
-
     }
 }

@@ -8,7 +8,7 @@ public class World : MonoBehaviour
 {
     public bool isFlipped = false;
     public UnityEvent worldFlipped;
-    public Dictionary<Vector3, Block> worldGrid = new Dictionary<Vector3, Block>();
+    public Dictionary<Vector3Int, Block> worldGrid = new Dictionary<Vector3Int, Block>();
 
     bool spacePressed;
     bool resetPressed;
@@ -31,7 +31,7 @@ public class World : MonoBehaviour
     {
         foreach (var block in allShapes.SelectMany(shape => shape.blocks.Select(block => block)))
         {
-            worldGrid.Add(block.transform.position, block);
+            worldGrid.Add(Vector3Int.RoundToInt(block.transform.position), block);
         }
     }
 
@@ -49,12 +49,12 @@ public class World : MonoBehaviour
         }
     }
 
-    public bool FindBlockInPosition(Vector3 position, out Block blockInPosition)
-    {
+    public bool FindBlockInPosition(Vector3Int position, out Block blockInPosition)
+    {   
         return worldGrid.TryGetValue(position, out blockInPosition);
     }
 
-    public void UpdateWorldGrid(List<Vector3> oldKeys, List<KeyValuePair<Vector3, Block>> entriesToAdd)
+    public void UpdateWorldGrid(List<Vector3Int> oldKeys, List<KeyValuePair<Vector3Int, Block>> entriesToAdd)
     {
         foreach (var key in oldKeys)
         {
@@ -82,7 +82,12 @@ public class World : MonoBehaviour
 
     public void ReloadLevel()
     {
-        SceneManager.LoadSceneAsync(currentLevel);
+        foreach (var block in worldGrid)
+        {
+            Debug.Log(block.ToString());
+        }
+
+        //SceneManager.LoadSceneAsync(currentLevel);
     }
 
     private void WinGame()
@@ -92,7 +97,7 @@ public class World : MonoBehaviour
 
     public void FlipWorld()
     {
-        transform.Rotate(new Vector3(0, 0, 1), -180, Space.Self);
+        transform.Rotate(new Vector3Int(0, 0, 1), -180, Space.Self);
         isFlipped = !isFlipped;
         worldFlipped.Invoke();
     }
