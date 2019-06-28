@@ -5,12 +5,11 @@ public class Block : MonoBehaviour
 {
     public int topPoint;
     public int bottomPoint;
-    public int height;
-    public bool isYMovable = false;
     public GridSnapper gridSnapper;
     public Shape parentShape;
 
     int xPosition;
+    int yPosition;
     int zPosition;
     float offset;
     World world;
@@ -50,30 +49,7 @@ public class Block : MonoBehaviour
         else
         {
             return true;
-
         }
-    }
-
-    public bool LowerBlock()
-    {
-        var result = false;
-        if (topPoint > 0.5f && isYMovable)
-        {
-            transform.position = new Vector3Int((int)transform.position.x, (int)transform.position.y - 1, (int)transform.position.z);
-            result = true;
-        }
-        return result;
-    }
-
-    public bool RaiseBlock()
-    {
-        var result = false;
-        if (bottomPoint < 0f && isYMovable)
-        {
-            transform.position = new Vector3Int((int)transform.position.x, (int)transform.position.y + 1, (int)transform.position.z);
-            result = true;
-        }
-        return result;
     }
 
     private void Update()
@@ -84,8 +60,9 @@ public class Block : MonoBehaviour
     private void UpdateFields()
     {
         xPosition = (int)transform.position.x;
+        yPosition = (int)transform.position.y;
         zPosition = (int)transform.position.z;
-        gameObject.name = "Block " + $"({xPosition}, {zPosition})";
+        gameObject.name = "Block " + $"({xPosition}, {yPosition}, {zPosition})";
 
         bottomPoint = (int)collider.bounds.min.y;
         topPoint = (int)collider.bounds.max.y;

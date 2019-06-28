@@ -29,6 +29,7 @@ public class World : MonoBehaviour
 
     private void FillGrid()
     {
+        worldGrid = new Dictionary<Vector3Int, Block>();
         foreach (var block in allShapes.SelectMany(shape => shape.blocks.Select(block => block)))
         {
             worldGrid.Add(Vector3Int.RoundToInt(block.transform.position), block);
@@ -99,6 +100,7 @@ public class World : MonoBehaviour
     {
         transform.Rotate(new Vector3Int(0, 0, 1), -180, Space.Self);
         isFlipped = !isFlipped;
+        FillGrid();
         worldFlipped.Invoke();
     }
 

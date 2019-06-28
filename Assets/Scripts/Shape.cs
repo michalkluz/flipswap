@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Shape : MonoBehaviour
 {
     public List<Block> blocks;
+    [SerializeField] bool isShapePushable;
 
     World world;
 
@@ -14,22 +16,22 @@ public class Shape : MonoBehaviour
 
     public bool PushShape(Vector3Int pushDirection)
     {
-        var isShapePushable = true;
-        var isBlockPushable = new List<bool>();
-        foreach (var block in blocks)
+        if (!isShapePushable)
         {
-            isBlockPushable.Add(block.CheckIfPushable(pushDirection));
+            return false;
         }
+        var isShapePushLegal = true;
+        var isBlockPushLegal = (blocks.Select(block => block.CheckIfPushable(pushDirection))).ToList();
 
-        foreach (bool isPushable in isBlockPushable)
+        foreach (bool isPushable in isBlockPushLegal)
         {
             if (!isPushable)
             {
-                isShapePushable = false;
+                isShapePushLegal = false;
             }
         }
 
-        if (isShapePushable)
+        if (isShapePushLegal)
         {
             MoveShapeInDirection(pushDirection);
             return true;

@@ -3,14 +3,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Block currentBlock;
-
     bool goForward;
     bool goBackward;
     bool goLeft;
     bool goRight;
-    bool pushUp;
-    bool pushDown;
+    bool goUp;
+    bool goDown;
     bool isWorldFlipped = false;
     World world;
 
@@ -23,7 +21,6 @@ public class Player : MonoBehaviour
     {
         GatherInput();
         Move();
-        LowerOrRaiseBlock();
     }
 
     private void GatherInput()
@@ -32,13 +29,13 @@ public class Player : MonoBehaviour
         goBackward = Input.GetKeyDown(KeyCode.DownArrow);
         goLeft = Input.GetKeyDown(KeyCode.LeftArrow);
         goRight = Input.GetKeyDown(KeyCode.RightArrow);
-        pushUp = Input.GetKeyDown(KeyCode.A);
-        pushDown = Input.GetKeyDown(KeyCode.Z);
+        goUp = Input.GetKeyDown(KeyCode.A);
+        goDown = Input.GetKeyDown(KeyCode.Z);
     }
 
     private void Move()
     {
-        if (!(goForward || goBackward || goLeft || goRight)) return;
+        if (!(goForward || goBackward || goLeft || goRight || goUp || goDown)) return;
         var newPosition = new Vector3Int();
 
         if (goForward)
@@ -73,57 +70,42 @@ public class Player : MonoBehaviour
                 (int)transform.position.z);
         }
 
+        else if (goUp)
+        {
+            newPosition = new Vector3Int(
+                (int)transform.position.x,
+                (int)transform.position.y + 1,
+                (int)transform.position.z);
+        }
+        else if (goDown)
+        {
+            newPosition = new Vector3Int(
+                (int)transform.position.x,
+                (int)transform.position.y - 1,
+                (int)transform.position.z);
+        }
+
         Block occupyingBlock;
         var isBlockFound = world.FindBlockInPosition(newPosition, out occupyingBlock);
 
         if (isBlockFound)
         {
-            if ((int)transform.position.y == occupyingBlock.topPoint)
+            var occupyingShape = occupyingBlock.parentShape;
+            var pushDirection = Vector3Int.RoundToInt(occupyingBlock.transform.position - transform.position);
+            var shapePushed = occupyingShape.PushShape(pushDirection);
+            if (shapePushed)
             {
                 transform.position = newPosition;
-                //currentBlock = occupyingBlock;
             }
             else
             {
-                var occupyingShape = occupyingBlock.parentShape;
-                var pushDirection = Vector3Int.RoundToInt(occupyingBlock.transform.position - transform.position);
-                var shapePushed = occupyingShape.PushShape(pushDirection);
-                if (shapePushed)
-                {
-                    transform.position = newPosition;
-                }
-                else
-                {
-                    //donothing because can't push
-                }
+                //donothing because can't push
             }
+
         }
         else
         {
             transform.position = newPosition;
-            //currentBlock = null;
-
-        }
-    }
-
-    private void LowerOrRaiseBlock()
-    {
-        if (pushDown && currentBlock != null)
-        {
-            var blockYMoved = currentBlock.LowerBlock();
-            if (blockYMoved)
-            {
-                transform.position = new Vector3Int((int)transform.position.x, (int)transform.position.y - 1, (int)transform.position.z);
-            }
-        }
-
-        if (pushUp && currentBlock != null)
-        {
-            var blockYMoved = currentBlock.RaiseBlock();
-            if (blockYMoved)
-            {
-                transform.position = new Vector3Int((int)transform.position.x, (int)transform.position.y + 1, (int)transform.position.z);
-            }
         }
     }
 
