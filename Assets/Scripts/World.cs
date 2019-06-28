@@ -54,6 +54,18 @@ public class World : MonoBehaviour
         return worldGrid.TryGetValue(position, out blockInPosition);
     }
 
+    public void UpdateWorldGrid(List<Vector3> oldKeys, List<KeyValuePair<Vector3, Block>> entriesToAdd)
+    {
+        foreach (var key in oldKeys)
+        {
+            worldGrid.Remove(key);
+        }
+        foreach (var entry in entriesToAdd)
+        {
+            worldGrid.Add(entry.Key, entry.Value);
+        }
+    }
+
     public void ObjectiveFulfilled()
     {
         bool isLastLevel = currentLevel == SceneManager.sceneCountInBuildSettings - 1;

@@ -23,6 +23,7 @@ public class Block : MonoBehaviour
         parentShape = GetComponentInParent<Shape>();
     }
 
+    
     public bool IsSnappingToGrid
     {
         get { return gridSnapper.shouldSnapToGrid; }
@@ -57,6 +58,14 @@ public class Block : MonoBehaviour
         }
     }
 
+    //public void MoveBlock(Vector3 direction)
+    //{
+    //    var newPosition = transform.position + direction;
+    //    world.UpdateWorldGrid(transform.position, newPosition, this);
+    //    transform.position = newPosition;
+    //}
+
+
     public bool LowerBlock()
     {
         var result = false;
@@ -67,8 +76,7 @@ public class Block : MonoBehaviour
         }
         return result;
     }
-
-
+    
     public bool RaiseBlock()
     {
         var result = false;
@@ -80,23 +88,6 @@ public class Block : MonoBehaviour
         return result;
     }
         
-
-    //public bool PushBlock(Vector3 pusherPosition)
-    //{
-    //    var pushDirection = new Vector3(pusherPosition.x - transform.position.x, transform.position.y, pusherPosition.z - transform.position.z);
-    //    var potentialPosition = new Vector3(transform.position.x - pushDirection.x, transform.position.y, transform.position.z - pushDirection.z);
-
-    //    Block occupyingBlock;
-    //    var isBlockFound = world.FindBlockInPosition(potentialPosition, out occupyingBlock);
-
-    //    if (occupyingBlock != null)
-    //    {
-    //        occupyingBlock.PushBlock(transform.position);
-    //    }
-    //    transform.position = potentialPosition;
-    //    return true;
-    //}
-
     private void Start()
     {
         collider = GetComponent<Collider>();

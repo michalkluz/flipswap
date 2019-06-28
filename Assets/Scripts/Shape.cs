@@ -10,6 +10,12 @@ public class Shape : MonoBehaviour
 
     public UnityEvent switchSnapToGrid;
 
+    World world;
+
+    private void Awake()
+    {
+        world = FindObjectOfType<World>();
+    }
     public bool ShouldSnap
     {
         get
@@ -53,7 +59,15 @@ public class Shape : MonoBehaviour
 
     private void MoveShapeInDirection(Vector3 pushDirection)
     {
-        transform.position = transform.position + pushDirection;
+        var keysToRemove = new List<Vector3>();
+        var valuesToAdd = new List<KeyValuePair<Vector3, Block>>();
+        foreach (var block in blocks)
+        {
+            keysToRemove.Add(block.transform.position);
+            valuesToAdd.Add(new KeyValuePair<Vector3, Block>(block.transform.position + pushDirection, block));
+        }
+        world.UpdateWorldGrid(keysToRemove, valuesToAdd);
+        transform.position += pushDirection;
     }
 
     public Block GetOccupyingBlock(Vector3 position)
