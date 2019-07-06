@@ -1,16 +1,17 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using static Assets.Helpers.DirectionsHelper;
 
 public class Player : MonoBehaviour
 {
-    bool goForward;
-    bool goBackward;
-    bool goLeft;
-    bool goRight;
-    bool goUp;
-    bool goDown;
+    Shape attachedShape;
+    Directions direction;
+    bool attach;
+    bool isCrouched = false;
+    bool isAttached = false;
     bool isWorldFlipped = false;
     World world;
+    Block occupyingBlock;
+    Vector3Int facingDirection;
 
     private void Awake()
     {
@@ -20,93 +21,98 @@ public class Player : MonoBehaviour
     void Update()
     {
         GatherInput();
-        Move();
+
+        if ((direction & (Directions.Left | Directions.Right | Directions.Up | Directions.Down)) > 0)
+        {
+            var newPosition = Vector3Int.RoundToInt(transform.position) + directionVectors[direction];
+            if (isAttached && attachedShape != null)
+            {
+                var shapePushed = attachedShape.PushShape(directionVectors[direction]);
+                if (shapePushed) // TODO implement collision for Player!!
+                {
+                    transform.position = newPosition;
+                }
+                else
+                {
+                    //donothing because can't push
+                }
+            }
+            else
+            {
+                transform.LookAt(newPosition);
+                facingDirection = directionVectors[direction];
+                if (!world.FindBlockInPosition(newPosition, out occupyingBlock))
+                {
+                    transform.position = newPosition;
+                }
+            }
+        }
+
+        if ((direction == Directions.Crouch && isCrouched == false) || (direction == Directions.Stand && isCrouched == true))
+        { 
+            if (isAttached && attachedShape != null)
+            {
+
+            }
+            else
+            {
+                transform.position += directionVectors[direction];
+                isCrouched = !isCrouched;
+            }
+        }
+
+        Attach();
+    }
+
+
+    private void Attach()
+    {
+        if (attach)
+        {
+            if (world.FindBlockInPosition(Vector3Int.RoundToInt(transform.position) + facingDirection, out occupyingBlock))
+            {
+                attachedShape = occupyingBlock.parentShape;
+                isAttached = true;
+            }
+        }
+        else
+        {
+            attachedShape = null;
+            isAttached = true;
+        }
     }
 
     private void GatherInput()
     {
-        goForward = Input.GetKeyDown(KeyCode.UpArrow);
-        goBackward = Input.GetKeyDown(KeyCode.DownArrow);
-        goLeft = Input.GetKeyDown(KeyCode.LeftArrow);
-        goRight = Input.GetKeyDown(KeyCode.RightArrow);
-        goUp = Input.GetKeyDown(KeyCode.A);
-        goDown = Input.GetKeyDown(KeyCode.Z);
-    }
-
-    private void Move()
-    {
-        if (!(goForward || goBackward || goLeft || goRight || goUp || goDown)) return;
-        var newPosition = new Vector3Int();
-
-        if (goForward)
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            newPosition = new Vector3Int(
-                (int)transform.position.x,
-                (int)transform.position.y,
-                (int)transform.position.z + 1);
+            direction = Directions.Right;
         }
-
-        else if (goBackward)
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            newPosition = new Vector3Int(
-                (int)transform.position.x,
-                (int)transform.position.y,
-                (int)transform.position.z - 1);
+            direction = Directions.Left;
         }
-
-        else if (goRight)
+        else if (Input.GetKeyDown(KeyCode.A))
         {
-            newPosition = new Vector3Int(
-                (int)transform.position.x + 1,
-                (int)transform.position.y,
-                (int)transform.position.z);
+            direction = Directions.Stand;
         }
-
-        else if (goLeft)
+        else if (Input.GetKeyDown(KeyCode.Z))
         {
-            newPosition = new Vector3Int(
-                (int)transform.position.x - 1,
-                (int)transform.position.y,
-                (int)transform.position.z);
+            direction = Directions.Crouch;
         }
-
-        else if (goUp)
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            newPosition = new Vector3Int(
-                (int)transform.position.x,
-                (int)transform.position.y + 1,
-                (int)transform.position.z);
+            direction = Directions.Up;
         }
-        else if (goDown)
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            newPosition = new Vector3Int(
-                (int)transform.position.x,
-                (int)transform.position.y - 1,
-                (int)transform.position.z);
-        }
-
-        Block occupyingBlock;
-        var isBlockFound = world.FindBlockInPosition(newPosition, out occupyingBlock);
-
-        if (isBlockFound)
-        {
-            var occupyingShape = occupyingBlock.parentShape;
-            var pushDirection = Vector3Int.RoundToInt(occupyingBlock.transform.position - transform.position);
-            var shapePushed = occupyingShape.PushShape(pushDirection);
-            if (shapePushed)
-            {
-                transform.position = newPosition;
-            }
-            else
-            {
-                //donothing because can't push
-            }
-
+            direction = Directions.Down;
         }
         else
         {
-            transform.position = newPosition;
+            direction = Directions.None;
         }
+        attach = Input.GetKey(KeyCode.E);
     }
 
     public bool IsWorldFlipped
@@ -114,6 +120,4 @@ public class Player : MonoBehaviour
         get { return isWorldFlipped; }
         set { isWorldFlipped = !isWorldFlipped; }
     }
-
-
 }

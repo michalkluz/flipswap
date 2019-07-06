@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 [ExecuteInEditMode]
+[SelectionBase]
 public class Block : MonoBehaviour
 {
     public int topPoint;

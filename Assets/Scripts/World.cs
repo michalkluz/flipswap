@@ -9,9 +9,12 @@ public class World : MonoBehaviour
     public bool isFlipped = false;
     public UnityEvent worldFlipped;
     public Dictionary<Vector3Int, Block> worldGrid = new Dictionary<Vector3Int, Block>();
+    [SerializeField] Camera mainCamera;
+    [SerializeField] Camera additionalCamera;
 
     bool spacePressed;
     bool resetPressed;
+    bool tabPressed;
     int currentLevel = 0;
     List<Shape> allShapes;
 
@@ -20,6 +23,8 @@ public class World : MonoBehaviour
     {
         FindAllShapes();
         FillGrid();
+        mainCamera.enabled = true;
+        additionalCamera.enabled = false;
     }
 
     private void FindAllShapes()
@@ -43,10 +48,18 @@ public class World : MonoBehaviour
         {
             FlipWorld();
         }
+
         resetPressed = Input.GetKeyDown(KeyCode.R);
         if (resetPressed)
         {
             ReloadLevel();
+        }
+
+        tabPressed = Input.GetKeyDown(KeyCode.Tab);
+        if (tabPressed)
+        {
+            mainCamera.enabled = !mainCamera.enabled;
+            additionalCamera.enabled = !additionalCamera.enabled;
         }
     }
 

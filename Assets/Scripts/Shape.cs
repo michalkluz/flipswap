@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Linq;
 
+[ExecuteInEditMode]
 public class Shape : MonoBehaviour
 {
     public List<Block> blocks;
