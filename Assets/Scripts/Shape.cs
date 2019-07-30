@@ -15,7 +15,7 @@ public class Shape : MonoBehaviour
         world = FindObjectOfType<World>();
     }
 
-    public bool PushShape(Vector3Int pushDirection)
+    public bool CheckIfPushable(Vector3Int pushDirection)
     {
         if (!isShapePushable)
         {
@@ -34,7 +34,6 @@ public class Shape : MonoBehaviour
 
         if (isShapePushLegal)
         {
-            MoveShapeInDirection(pushDirection);
             return true;
         }
         else
@@ -43,7 +42,7 @@ public class Shape : MonoBehaviour
         }
     }
 
-    private void MoveShapeInDirection(Vector3Int pushDirection)
+    public void MoveShapeInDirection(Vector3Int pushDirection)
     {
         var keysToRemove = new List<Vector3Int>();
         var entriesToAdd = new List<KeyValuePair<Vector3Int, Block>>();

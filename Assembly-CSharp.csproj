@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Helpers\DirectionsHelper.cs" />
+    <Compile Include="Assets\Helpers\Leg.cs" />
     <Compile Include="Assets\Scripts\Block.cs" />
     <Compile Include="Assets\Scripts\EditorHelper.cs" />
     <Compile Include="Assets\Scripts\Goal.cs" />
